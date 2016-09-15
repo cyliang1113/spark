@@ -24,6 +24,7 @@ object RDDToDataFrameBySchema {
     val schemaString = "name	age";  // 可以定义在配置文件中
     val schema = StructType(schemaString.split("\t").map(fieldName => StructField(fieldName, StringType, true)))
     
+    // rdd -> dataframe
     val df = sqlContext.createDataFrame(rowRDD, schema);
     
     // df.show();
