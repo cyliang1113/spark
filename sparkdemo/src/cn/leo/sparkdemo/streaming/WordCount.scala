@@ -11,6 +11,7 @@ object WordCount {
 
     val streamingContext = new StreamingContext(conf, Seconds(1))
     
+    // 客户端socket
     val lines = streamingContext.socketTextStream("hadoop23", 9999)
     
     lines.flatMap(x => x.split(" ")).map((_, 1)).reduceByKey((_ + _)).print()
