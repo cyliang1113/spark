@@ -1,24 +1,27 @@
 package cn.leo.sparkdemo.streaming
 
+import scala.collection.immutable.Set
+
 import org.apache.spark.SparkConf
-import org.apache.spark.storage.StorageLevel
 import org.apache.spark.streaming.Seconds
 import org.apache.spark.streaming.StreamingContext
 import org.apache.spark.streaming.dstream.DStream.toPairDStreamFunctions
 import org.apache.spark.streaming.kafka.KafkaUtils
 
-object KafkaReceiver {
+import kafka.serializer.StringDecoder
+
+object KafkaDirect {
   def main(args: Array[String]): Unit = {
-    val conf = new SparkConf().setAppName("KafkaReceiver")
+    val conf = new SparkConf().setAppName("KafkaDirect")
     conf.setMaster("local[6]")
 
     val streamingContext = new StreamingContext(conf, Seconds(10))
 
-    // streamingContext, "hadoop06:2181,hadoop07:2181,hadoop08:2181", "FirstGroup", "topic.hello.kafka"
-    val topics = Map[String, Int](("topic.hello.kafka", 3))
-    val lines = KafkaUtils.createStream(streamingContext, "hadoop06:2181,hadoop07:2181,hadoop08:2181", "FirstGroup", topics, StorageLevel.MEMORY_AND_DISK_2)
+    val kafkaParams = Map[String, String](("metadata.broker.list", "hadoop06:9092,hadoop07:9092,hadoop08:9092"))
+    val topics = Set[String]("topic.hello.kafka")
+    
+    val lines = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](streamingContext, kafkaParams, topics)
 
-    //lines.flatMapValues(x => x.split(" ")).map((_, 1)).reduceByKey((_ + _)).print()
     lines.flatMap(x => x._2.split(" ")).map((_, 1)).reduceByKey((_ + _)).print()
 
     streamingContext.start
