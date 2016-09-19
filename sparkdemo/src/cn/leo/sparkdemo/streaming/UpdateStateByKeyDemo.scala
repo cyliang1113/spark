@@ -18,7 +18,7 @@ object UpdateStateByKeyDemo {
     val streamingContext = new StreamingContext(conf, Seconds(10))
     streamingContext.checkpoint("D:/spark-test/sparkStreaming/UpdateStateByKeyDemo/checkpoint")
 
-    // "hadoop06:2181,hadoop07:2181,hadoop08:2181", "FirstGroup", "topic.hello.kafka"
+    // kafka "hadoop06:2181,hadoop07:2181,hadoop08:2181", "FirstGroup", "topic.hello.kafka"
     val topics = Map[String, Int](("topic.hello.kafka", 3))
     val lines = KafkaUtils.createStream(streamingContext, "hadoop06:2181,hadoop07:2181,hadoop08:2181", "FirstGroup", topics, StorageLevel.MEMORY_AND_DISK_2)
 
