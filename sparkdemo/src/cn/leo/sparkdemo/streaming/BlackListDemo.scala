@@ -25,14 +25,13 @@ object BlackListDemo {
     val lines = KafkaUtils.createStream(streamingContext, "hadoop06:2181,hadoop07:2181,hadoop08:2181", "FirstGroup", topics, StorageLevel.MEMORY_AND_DISK_2)
 
     // 模拟的数据格式为: 时间\t名称  如: [20160919  hello]
-    val kvLines = lines.map {
-      l =>
-        {
-          val str = l._2;
-          val arr = str.split("\t")
-          (arr(1), str)
-        }
-    }
+    val kvLines = lines.map(
+      l => {
+        val str = l._2;
+        val arr = str.split("\t")
+        (arr(1), str)
+      })
+
     kvLines.transform(data => data.leftOuterJoin(blackListRdd)).filter(l => {
       println(l)
       val tag = l._2._2.getOrElse(0)

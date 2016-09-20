@@ -22,13 +22,13 @@ object UpdateStateByKeyDemo {
     val topics = Map[String, Int](("topic.hello.kafka", 3))
     val lines = KafkaUtils.createStream(streamingContext, "hadoop06:2181,hadoop07:2181,hadoop08:2181", "FirstGroup", topics, StorageLevel.MEMORY_AND_DISK_2)
 
-    lines.flatMap(x => x._2.split(" ")).map((_, 1)).updateStateByKey {
-      (values: Seq[Int], cc: Option[Int]) =>
-        {
-          val s = values.sum + cc.getOrElse(0)
-          Some[Int](s)
-        }
-    }.print()
+    lines.flatMap(x => x._2.split(" ")).map((_, 1)).updateStateByKey(
+      (values: Seq[Int], cc: Option[Int]) => {
+
+        val s = values.sum + cc.getOrElse(0)
+        Some[Int](s)
+
+      }).print()
 
     streamingContext.start
     streamingContext.awaitTermination
