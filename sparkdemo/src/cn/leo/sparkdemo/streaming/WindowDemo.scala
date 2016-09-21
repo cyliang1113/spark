@@ -20,8 +20,9 @@ object WindowDemo {
 
     lines.print
 
-    // 每二十秒 统计一次前三十秒的内容
-    lines.flatMap(x => x._2.split(" ")).map((_, 1)).reduceByKeyAndWindow((a: Int, b: Int) => a + b, Seconds(30), Seconds(20)).print()
+    // 每二十秒 统计一次前三十秒的内容   滑动窗体
+    lines.flatMap(x => x._2.split(" ")).map((_, 1))
+      .reduceByKeyAndWindow((a: Int, b: Int) => a + b, Seconds(30), Seconds(20)).print()
 
     streamingContext.start
     streamingContext.awaitTermination
