@@ -16,6 +16,8 @@ object UpdateStateByKeyDemo {
     conf.setMaster("local[6]")
 
     val streamingContext = new StreamingContext(conf, Seconds(10))
+    
+    // update state 要设这checkpoint
     streamingContext.checkpoint("D:/spark-test/sparkStreaming/UpdateStateByKeyDemo/checkpoint")
 
     // kafka "hadoop06:2181,hadoop07:2181,hadoop08:2181", "FirstGroup", "topic.hello.kafka"
